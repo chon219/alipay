@@ -86,7 +86,7 @@ class Alipay(object):
 
     def send_goods_confirm_by_platform(self, **kw):
         '''发货接口'''
-        names = ['trade_no', 'logistics_name']
+        names = ['trade_no', 'logistics_name', 'transport_type']
         self._check_params(kw, names)
 
         url = self._build_url('send_goods_confirm_by_platform', **kw)
@@ -97,7 +97,7 @@ class Alipay(object):
         kw.pop('sign_type')
         if self._generate_sign(kw) == sign:
             return requests.get(
-                "5s?service=notify_verify&partner=%s&notify_id=%s"
+                "%s?service=notify_verify&partner=%s&notify_id=%s"
                 % (self.GATEWAY_URL, self.pid, kw['notify_id'])).text == 'true'
         else:
             return False
