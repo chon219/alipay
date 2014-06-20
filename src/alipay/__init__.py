@@ -45,6 +45,9 @@ class Alipay(object):
 
     def _build_url(self, service, **kw):
         params = self.default_params.copy()
+        if service == "send_goods_confirm_by_platform":
+            params.pop('seller_email')
+            params.pop('payment_type')
         params['service'] = service
         params.update(kw)
         params.update({'sign_type': 'MD5',
@@ -80,6 +83,14 @@ class Alipay(object):
 
         url = self._build_url('trade_create_by_buyer', **kw)
         return url
+
+    def send_goods_confirm_by_platform(self, **kw):
+        '''发货接口'''
+        names = ['trade_no', 'logistics_name']
+        self._check_params(kw, names)
+
+        url = self._build_url('send_goods_confirm_by_platform', **kw)
+        return requests.get(url).text
 
     def verify_notify(self, **kw):
         sign = kw.pop('sign')
