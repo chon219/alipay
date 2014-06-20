@@ -1,17 +1,25 @@
 # -*- coding: utf-8 -*-
+
 import requests
-from hashlib import md5
-from .exceptions import MissingParameter
-from .exceptions import ParameterValueError
 import six
+from hashlib import md5
 
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
 
+from alipay.exceptions import MissingParameter, ParameterValueError
+
+
 def encode_dict(params):
-    return {k:six.u(v).encode('utf-8') if isinstance(v, str) else v.encode('utf-8') if isinstance(v, six.string_types) else v for k, v in six.iteritems(params)}
+    return {
+        k: six.u(v).encode('utf-8')
+        if isinstance(v, str) else v.encode('utf-8')
+        if isinstance(v, six.string_types) else v
+        for k, v in six.iteritems(params)
+    }
+
 
 class Alipay(object):
 
@@ -77,7 +85,9 @@ class Alipay(object):
         sign = kw.pop('sign')
         kw.pop('sign_type')
         if self._generate_sign(kw) == sign:
-            return requests.get("https://mapi.alipay.com/gateway.do?service=notify_verify&partner=%s&notify_id=%s" % (self.pid, kw['notify_id'])).text == 'true'
+            return requests.get(
+                "5s?service=notify_verify&partner=%s&notify_id=%s"
+                % (self.GATEWAY_URL, self.pid, kw['notify_id'])).text == 'true'
         else:
             return False
 
